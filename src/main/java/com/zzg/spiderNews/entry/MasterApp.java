@@ -12,6 +12,7 @@ import java.util.concurrent.Executors;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
+import com.zzg.spiderNews.cache.InitConfig;
 import com.zzg.spiderNews.cache.JedisUtil;
 import com.zzg.spiderNews.parse.LinkFilter;
 
@@ -21,7 +22,7 @@ public class MasterApp {
 		ApplicationContext context = new ClassPathXmlApplicationContext(new String[] {"spring/spring-service.xml","spring/spring-dao.xml"});
 		final LinkFilter linkFilter = (LinkFilter)context.getBean("linkFilter");
 		
-		List<String> seed = readSeed("D:/spider_init.txt");
+		List<String> seed = readSeed(InitConfig.SEED_LOCATION);
 		for(int i=0;i<seed.size();i++){
 			 JedisUtil.lpush("queue", seed.get(i));
 		}
@@ -32,7 +33,7 @@ public class MasterApp {
 			@Override
 			public void run() {
 				while(true){
-					String source = (String) JedisUtil.rpop("sourceQueue");
+					String source = (String) JedisUtil.rpop(InitConfig.QUEUE_SOURCE);
 					if(source == null){
 						try {
 							Thread.sleep(1000);

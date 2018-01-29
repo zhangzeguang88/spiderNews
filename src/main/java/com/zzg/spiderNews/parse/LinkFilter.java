@@ -11,6 +11,7 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import org.springframework.stereotype.Component;
 
+import com.zzg.spiderNews.cache.InitConfig;
 import com.zzg.spiderNews.cache.JedisUtil;
 
 @Component
@@ -52,7 +53,7 @@ public class LinkFilter {
 						System.out.println("保存至布隆过滤器");
 					}
 					//添加进入redis
-					JedisUtil.lpush("queue", linkHref);
+					JedisUtil.lpush(InitConfig.QUEUE_URL, linkHref);
 				}
 			}
 		}

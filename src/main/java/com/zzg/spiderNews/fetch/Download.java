@@ -23,6 +23,7 @@ import com.gargoylesoftware.htmlunit.Page;
 import com.gargoylesoftware.htmlunit.WebClient;
 import com.gargoylesoftware.htmlunit.WebRequest;
 import com.gargoylesoftware.htmlunit.util.NameValuePair;
+import com.zzg.spiderNews.cache.InitConfig;
 import com.zzg.spiderNews.cache.JedisUtil;
 import com.zzg.spiderNews.entity.CrawlHtml;
 import com.zzg.spiderNews.service.CrawHtmlServiceImpl;
@@ -135,7 +136,7 @@ public class Download {
 			int responseCode = page.getWebResponse().getStatusCode();
 			String responseMsg = page.getWebResponse().getStatusMessage();
 			
-			JedisUtil.lpush("sourceQueue", page.getWebResponse().getContentAsString());
+			JedisUtil.lpush(InitConfig.QUEUE_SOURCE, page.getWebResponse().getContentAsString());
 			
 			//将url source mac 哪台机器存入数据库
 			CrawlHtml ct = new CrawlHtml();

@@ -6,6 +6,7 @@ import java.util.concurrent.Executors;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
+import com.zzg.spiderNews.cache.InitConfig;
 import com.zzg.spiderNews.cache.JedisUtil;
 import com.zzg.spiderNews.fetch.Download;
 
@@ -41,7 +42,7 @@ public class SlaveApp {
 			@Override
 			public void run() {
 				while(true){
-					String url = (String) JedisUtil.rpop("queue");
+					String url = (String) JedisUtil.rpop(InitConfig.QUEUE_URL);
 					if(url==null){
 						try {
 							Thread.sleep(1000);
