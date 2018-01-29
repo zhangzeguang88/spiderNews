@@ -186,6 +186,32 @@ public final class JedisUtil {
     public interface ScriptCall{
         Object call(Jedis jedis);
     }
+    
+
+	public static void lpush(String key , Object value){
+		Jedis jedis = pool.getResource();
+		try{
+			byte[] encodeKey = SafeEncoder.encode(key);
+			jedis.lpush(encodeKey, serialize(value));
+		}catch(Exception e){
+			throw e;
+		}finally{
+			pool.returnResourceObject(jedis);
+		}
+	}
+	
+	public static Object rpop(String key){
+		Jedis jedis = pool.getResource();
+		try{
+			byte[] encodeKey = SafeEncoder.encode(key);
+			byte[] valueByte = jedis.lpop(encodeKey);
+			return unserialize(valueByte);
+		}catch(Exception e){
+			throw e;
+		}finally{
+			pool.returnResourceObject(jedis);
+		}
+	}
 
     public static void main(String[] args) throws InterruptedException {
         while (true) {
