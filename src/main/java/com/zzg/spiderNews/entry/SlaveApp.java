@@ -33,7 +33,7 @@ public class SlaveApp {
 	
 	public static void main(String args[]){
 		
-		ApplicationContext context = new ClassPathXmlApplicationContext(new String[] {"spring/spring-service.xml,spring/spring-dao.xml"});
+		ApplicationContext context = new ClassPathXmlApplicationContext(new String[] {"spring/spring-service.xml","spring/spring-dao.xml"});
 		final Download download = (Download)context.getBean("download");
 		
 		ExecutorService fetchPool = Executors.newSingleThreadExecutor();
