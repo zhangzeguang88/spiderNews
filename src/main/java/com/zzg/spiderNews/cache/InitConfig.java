@@ -14,8 +14,8 @@ public class InitConfig {
 	                    "[jedis-pool.properties] is not found!");
 	        }
 
-	        QUEUE_URL = bundle.getString("fetch.url.queue.name");
-	        QUEUE_SOURCE = bundle.getString("fetch.source.queue.name");
+	        QUEUE_URL = bundle.getString("fetch.queue.url.name");
+	        QUEUE_SOURCE = bundle.getString("fetch.queue.source.name");
 	        SEED_LOCATION = bundle.getString("fetch.seed.location");
 	}
 

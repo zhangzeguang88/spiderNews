@@ -28,7 +28,7 @@ public class BloomFilterUtil {
 				if(bloomFilter==null) {
 					bloomFilter = new BloomFilter();
 				}
-			}
+			} 
 		}
 		return bloomFilter;
 	}
@@ -36,7 +36,7 @@ public class BloomFilterUtil {
 	public static void setBloomFilter(BloomFilter bf) {
 		try{
 			ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream("bf.bat"));
-			out.writeObject(bloomFilter);
+			out.writeObject(bf);
 			out.close();
 		}catch(Exception e){								
 			e.printStackTrace();

@@ -15,7 +15,7 @@
   <sql id="Base_Column_List" >
     id, url, source, publish_time,title, content, html, update_time, create_time 
   </sql>
-  <insert id="insert" parameterType="com.zzg.spiderNews.entity.CrawlHtmlWithBLOBs" >
+  <insert id="insert" parameterType="com.zzg.spiderNews.entity.CrawlHtml" >
     insert into crawl_html (id, url, source, 
       publish_time, update_time, create_time, 
       title, content, html
@@ -25,7 +25,7 @@
       #{title,jdbcType=LONGVARCHAR}, #{content,jdbcType=LONGVARCHAR}, #{html,jdbcType=LONGVARCHAR}
       )
   </insert>
-  <insert id="insertSelective" parameterType="com.zzg.spiderNews.entity.CrawlHtmlWithBLOBs" >
+  <insert id="insertSelective" parameterType="com.zzg.spiderNews.entity.CrawlHtml" >
     insert into crawl_html
     <trim prefix="(" suffix=")" suffixOverrides="," >
       <if test="id != null" >

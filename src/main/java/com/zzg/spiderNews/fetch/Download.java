@@ -62,8 +62,6 @@ public class Download {
 	
 	private static WebClient webClient = null;
 	static{
-		ArrayList a= null;
-		
 		BrowserVersion.FIREFOX_24.setBrowserLanguage("zh-CN");
 		BrowserVersion.FIREFOX_24.setSystemLanguage("zh-CN");
 		BrowserVersion.FIREFOX_24.setUserLanguage("zh-CN");

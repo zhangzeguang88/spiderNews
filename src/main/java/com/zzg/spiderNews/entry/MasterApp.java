@@ -24,7 +24,7 @@ public class MasterApp {
 		
 		List<String> seed = readSeed(InitConfig.SEED_LOCATION);
 		for(int i=0;i<seed.size();i++){
-			 JedisUtil.lpush("queue", seed.get(i));
+			 JedisUtil.lpush(InitConfig.QUEUE_URL, seed.get(i));
 		}
 		
 		// 启动解析线程
@@ -51,8 +51,6 @@ public class MasterApp {
 					}
 				}
 			}
-			
-			
 		};
 		
 		parsePool.submit(parseTask);
