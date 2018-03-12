@@ -32,6 +32,7 @@ public class MasterApp {
 		Runnable parseTask = new Runnable(){
 			@Override
 			public void run() {
+				int number = 0;
 				while(true){
 					String source = (String) JedisUtil.rpop(InitConfig.QUEUE_SOURCE);
 					if(source == null){
@@ -41,9 +42,11 @@ public class MasterApp {
 							// TODO Auto-generated catch block
 							e.printStackTrace();
 						}
+						System.out.println("队列为空");
 						continue;
 					}
 					try {
+						System.out.println("解析页面数量="+number);
 						linkFilter.findLinkByJ(source);
 					} catch (Exception e) {
 						// TODO Auto-generated catch block

@@ -10,7 +10,7 @@
 	http://www.springframework.org/schema/tx
 	http://www.springframework.org/schema/tx/spring-tx.xsd">
 	<!-- 扫描service包下所有使用注解的类型 -->
-	<context:component-scan base-package="com.zzg.spiderNews.service,com.zzg.spiderNews.fetch" />
+	<context:component-scan base-package="com.zzg.spiderNews.service,com.zzg.spiderNews.fetch,com.zzg.spiderNews.parse" />
 
 	<!-- 配置事务管理器 -->
 	<bean id="transactionManager"
