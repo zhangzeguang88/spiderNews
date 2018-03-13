@@ -9,13 +9,18 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import com.zzg.spiderNews.cache.InitConfig;
 import com.zzg.spiderNews.cache.JedisUtil;
+import com.zzg.spiderNews.entry.MasterApp;
 
 @Component
 public class LinkFilter {
+	
+	private static final Logger logger = LoggerFactory.getLogger(LinkFilter.class);
 
 	private BloomFilter bloomFilter;
 	
@@ -43,18 +48,18 @@ public class LinkFilter {
 					|| getLinkType(linkHref, ".*zip$")
 					|| getLinkType(linkHref, ".*pps$")
 					|| getLinkType(linkHref, ".*ppt$")) { 
-				System.out.println("这是无效链接，不存储，直接丢弃"); 
-			} else {
-				if (!bloomFilter.contains(linkHref)) {
-					bloomFilter.add(linkHref);
-					i++;
-					if (i % 1000000 == 0) {
-						BloomFilterUtil.setBloomFilter(bloomFilter);
-						System.out.println("保存至布隆过滤器");
-					}
-					//添加进入redis
-					JedisUtil.lpush(InitConfig.QUEUE_URL, linkHref);
+				logger.info("这是无效链接,丢弃={}",linkHref);
+				continue;
+			} 
+			if (!bloomFilter.contains(linkHref)) {
+				bloomFilter.add(linkHref);
+				i++;
+				if (i % 1000000 == 0) {
+					BloomFilterUtil.setBloomFilter(bloomFilter);
+					logger.info("保存至布隆过滤器,布隆过滤器当前保存链接数={}",i);
 				}
+				//添加进入redis
+				JedisUtil.lpush(InitConfig.QUEUE_URL, linkHref);
 			}
 		}
 
@@ -89,54 +94,6 @@ public class LinkFilter {
 			list.add(ma.group());
 		}
 		return list;
-	}
-
-	// 正则表达式 获取标题
-	public static String getTitle(String s) {
-		String regex;
-		String title = "";
-		final List<String> list = new ArrayList<String>();
-		regex = "<title>.*?</title>";
-		final Pattern pa = Pattern.compile(regex, Pattern.CANON_EQ);
-		final Matcher ma = pa.matcher(s);
-		while (ma.find()) {
-			list.add(ma.group());
-		}
-		for (int i = 0; i < list.size(); i++) {
-			title = title + list.get(i);
-		}
-		return outTag(title);
-	}
-
-	// 获取脚本
-	public List<String> getScript(final String s) {
-		String regex;
-		final List<String> list = new ArrayList<String>();
-		regex = "<script.*?</script>";
-		final Pattern pa = Pattern.compile(regex, Pattern.DOTALL);
-		final Matcher ma = pa.matcher(s);
-		while (ma.find()) {
-			list.add(ma.group());
-		}
-		return list;
-	}
-
-	// 获取css
-	public List<String> getCSS(final String s) {
-		String regex;
-		final List<String> list = new ArrayList<String>();
-		regex = "<style.*?</style>";
-		final Pattern pa = Pattern.compile(regex, Pattern.DOTALL);
-		final Matcher ma = pa.matcher(s);
-		while (ma.find()) {
-			list.add(ma.group());
-		}
-		return list;
-	}
-
-	// 去掉标记
-	public static String outTag(final String s) {
-		return s.replaceAll("<.*?>", "");
 	}
 
 	public static String getCharSet(String content) {

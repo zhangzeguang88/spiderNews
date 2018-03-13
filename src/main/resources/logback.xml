@@ -1,13 +1,31 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<configuration debug="true">
+<configuration debug="true" scan="true" scanPeriod="30 seconds">
+ 	<property name="project" value="spiderNews"/>
+    <property name="logLevel" value="info"/>
+    <property name="logPath" value="D:/log/spiderNews"/>
+
 	<appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
 		<!-- encoders are by default assigned the type ch.qos.logback.classic.encoder.PatternLayoutEncoder -->
 		<encoder>
 			<pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
 		</encoder>
 	</appender>
+	
+	 <!-- info日志 -->
+    <!-- 按文件大小滚动日志 -->
+    <appender name="ALL-OUT" 
+		class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${logPath}/info/${project}-info.log</file>
+        <encoder>
+            <pattern>%date{yyyy-MM-dd HH:mm:ss.SSS} | %thread | %-5level | %class{200} | %file\(%line\) | %msg%n</pattern>
+        </encoder>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>${logPath}/info/${project}-info-%d{yyyy-MM-dd}.log</fileNamePattern>
+        </rollingPolicy>
+    </appender>
 
-	<root level="debug">
+	<root level="DEBUG">
 		<appender-ref ref="STDOUT" />
+		<appender-ref ref="ALL-OUT" />
 	</root>
 </configuration>

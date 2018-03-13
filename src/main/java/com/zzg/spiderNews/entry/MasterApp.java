@@ -9,6 +9,8 @@ import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
@@ -18,11 +20,17 @@ import com.zzg.spiderNews.parse.LinkFilter;
 
 public class MasterApp {
 
+	private static final Logger logger = LoggerFactory.getLogger(MasterApp.class);
+	
 	public static void main(String args[]){
+		logger.info("master启动,加载上下文开始");
 		ApplicationContext context = new ClassPathXmlApplicationContext(new String[] {"spring/spring-service.xml","spring/spring-dao.xml"});
+		logger.info("加载上下文结束");
 		final LinkFilter linkFilter = (LinkFilter)context.getBean("linkFilter");
 		
+		logger.info("种子加载开始");
 		List<String> seed = readSeed(InitConfig.SEED_LOCATION);
+		logger.info("种子加载结束，种子数量={}",seed.size());
 		for(int i=0;i<seed.size();i++){
 			 JedisUtil.lpush(InitConfig.QUEUE_URL, seed.get(i));
 		}
@@ -42,11 +50,11 @@ public class MasterApp {
 							// TODO Auto-generated catch block
 							e.printStackTrace();
 						}
-						System.out.println("队列为空");
+						logger.info("QUEUE_SOURCE队列为空，继续");
 						continue;
 					}
 					try {
-						System.out.println("解析页面数量="+number);
+						logger.info("QUEUE_SOURCE不为空，pull 1,解析页面数量={}",number);
 						linkFilter.findLinkByJ(source);
 					} catch (Exception e) {
 						// TODO Auto-generated catch block
@@ -76,10 +84,10 @@ public class MasterApp {
 	                }
 	                read.close();
 			    }else{
-			        System.out.println("找不到指定的文件");
+			        logger.error("读取种子时，找不到指定的文件");
 			    }
 	    } catch (Exception e) {
-	        System.out.println("读取文件内容出错");
+	        logger.error("读取种子时，读取文件内容出错");
 	        e.printStackTrace();
 	    }
 	    return seed;

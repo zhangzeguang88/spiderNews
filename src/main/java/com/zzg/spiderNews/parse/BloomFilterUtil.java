@@ -5,10 +5,14 @@ import java.io.FileOutputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 public class BloomFilterUtil {
+	
+	private static final Logger logger = LoggerFactory.getLogger(BloomFilterUtil.class);
 	
 	private static BloomFilter bloomFilter = null;
 	
@@ -22,10 +26,12 @@ public class BloomFilterUtil {
 			ObjectInputStream in = new ObjectInputStream(fi);
 			BloomFilter bFilter = (BloomFilter)in.readObject();					
 			bloomFilter = bFilter;
+			logger.info("布隆过滤器磁盘文件初始化");
 			in.close();
 		}catch(Exception e){
 			synchronized(BloomFilterUtil.class){
 				if(bloomFilter==null) {
+					logger.info("布隆过滤器内存初始化");
 					bloomFilter = new BloomFilter();
 				}
 			} 
