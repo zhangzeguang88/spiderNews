@@ -10,6 +10,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
+import com.zzg.spiderNews.cache.InitConfig;
+
 public class BloomFilterUtil {
 	
 	private static final Logger logger = LoggerFactory.getLogger(BloomFilterUtil.class);
@@ -22,7 +24,7 @@ public class BloomFilterUtil {
 			if(bloomFilter != null){
 				return bloomFilter;
 			}
-			FileInputStream fi = new FileInputStream("bf.bat");
+			FileInputStream fi = new FileInputStream(InitConfig.BLOOM_LOCATION);
 			ObjectInputStream in = new ObjectInputStream(fi);
 			BloomFilter bFilter = (BloomFilter)in.readObject();					
 			bloomFilter = bFilter;

@@ -2,7 +2,7 @@
 <configuration debug="true" scan="true" scanPeriod="30 seconds">
  	<property name="project" value="spiderNews"/>
     <property name="logLevel" value="info"/>
-    <property name="logPath" value="D:/log/spiderNews"/>
+    <property name="logPath" value="D:/file_project/log/spiderNews"/>
 
 	<appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
 		<!-- encoders are by default assigned the type ch.qos.logback.classic.encoder.PatternLayoutEncoder -->
@@ -24,7 +24,7 @@
         </rollingPolicy>
     </appender>
 
-	<root level="DEBUG">
+	<root level="${logLevel}">
 		<appender-ref ref="STDOUT" />
 		<appender-ref ref="ALL-OUT" />
 	</root>

@@ -6,6 +6,7 @@ public class InitConfig {
 	 public static String QUEUE_URL = "";
 	 public static String QUEUE_SOURCE = "";
 	 public static String SEED_LOCATION = "";
+	 public static String BLOOM_LOCATION = "";
 	
 	static{
 		 ResourceBundle bundle = ResourceBundle.getBundle("fetch");
@@ -17,6 +18,7 @@ public class InitConfig {
 	        QUEUE_URL = bundle.getString("fetch.queue.url.name");
 	        QUEUE_SOURCE = bundle.getString("fetch.queue.source.name");
 	        SEED_LOCATION = bundle.getString("fetch.seed.location");
+	        BLOOM_LOCATION = bundle.getString("fetch.bloom.location");
 	}
 
 }
