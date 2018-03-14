@@ -23,6 +23,16 @@ public class MasterApp {
 	private static final Logger logger = LoggerFactory.getLogger(MasterApp.class);
 	
 	public static void main(String args[]){
+		
+		if(args.length <1){
+			logger.info("参数长度小于1，不合法");
+			return;
+		}
+		if("slave".equalsIgnoreCase(args[0])){
+			SlaveApp.start(null);
+			return;
+		}	
+		
 		logger.info("master启动,加载上下文开始");
 		ApplicationContext context = new ClassPathXmlApplicationContext(new String[] {"spring/spring-service.xml","spring/spring-dao.xml"});
 		logger.info("加载上下文结束");

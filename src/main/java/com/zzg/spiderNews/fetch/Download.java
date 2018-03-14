@@ -12,6 +12,8 @@ import java.util.Map;
 
 import javax.annotation.Resource;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import com.gargoylesoftware.htmlunit.BrowserVersion;
@@ -21,15 +23,19 @@ import com.gargoylesoftware.htmlunit.HttpMethod;
 import com.gargoylesoftware.htmlunit.NicelyResynchronizingAjaxController;
 import com.gargoylesoftware.htmlunit.Page;
 import com.gargoylesoftware.htmlunit.WebClient;
+import com.gargoylesoftware.htmlunit.WebConnection;
 import com.gargoylesoftware.htmlunit.WebRequest;
 import com.gargoylesoftware.htmlunit.util.NameValuePair;
 import com.zzg.spiderNews.cache.InitConfig;
 import com.zzg.spiderNews.cache.JedisUtil;
 import com.zzg.spiderNews.entity.CrawlHtml;
+import com.zzg.spiderNews.parse.BloomFilterUtil;
 import com.zzg.spiderNews.service.CrawHtmlServiceImpl;
 
 @Component
 public class Download {
+	
+	private static final Logger logger = LoggerFactory.getLogger(Download.class);
 	
 	@Resource
 	CrawHtmlServiceImpl crawHtmlServiceImpl;
@@ -39,7 +45,6 @@ public class Download {
 		try{
 			InetAddress ia = InetAddress.getLocalHost();
 			byte[] mac = NetworkInterface.getByInetAddress(ia).getHardwareAddress();
-			System.out.println("mac数组长度："+mac.length);
 			StringBuffer sb = new StringBuffer("");
 			for(int i=0; i<mac.length; i++) {
 				if(i!=0) {
@@ -69,8 +74,8 @@ public class Download {
 		BrowserVersion.FIREFOX_24.setBrowserVersion(46);
 		BrowserVersion.FIREFOX_24.setCpuClass("x64");
 		webClient = new WebClient(BrowserVersion.FIREFOX_24);
-		//webClient.setWebConnection(new WebConnection(webClient));
-		if(1!=1){
+		webClient.setWebConnection(new MyHttpWebConnection(webClient));
+		if(false){
 			webClient = new WebClient(BrowserVersion.FIREFOX_24,"127.0.0.1",8888);
 		}else{
 			webClient = new WebClient(BrowserVersion.FIREFOX_24);
@@ -96,15 +101,11 @@ public class Download {
 	
 	
 	
-	public static void main(String[] args) throws FailingHttpStatusCodeException, MalformedURLException, IOException {
+	public static void main(String[] args) throws Exception {
 		// TODO Auto-generated method stub
 		webClient.getOptions().setJavaScriptEnabled(false);
-		Page page = webClient.getPage("https://service.icbc-axa.com/icbc/investmentlinked/user/login?currentDomain=service.icbc-axa.com&channel=2");
-		String imageCodeUrl = "https://service.icbc-axa.com/icbc/investmentlinked/eservice/RandomCodeAction?" + Math.random();
-		webClient.getPage(imageCodeUrl);
-		
-		
-		
+		Download dl = new Download();
+		dl.loadPage("http://news.sina.com.cn/c/nd/2018-03-13/doc-ifyscsmv0614178.shtml", "GET", null, null, "utf-8");
 	}
 	
 	
@@ -126,13 +127,13 @@ public class Download {
 		if (paramList != null) {
 			request.setRequestParameters(paramList);
 		}
-		
-		System.out.println("下载url=" + url);
+		logger.info("url={}",url);
 		page = webClient.getPage(request);
 		// 请求成功之后获得响应码
 		if (page != null) {
 			int responseCode = page.getWebResponse().getStatusCode();
 			String responseMsg = page.getWebResponse().getStatusMessage();
+			logger.info("responseCode={},responseMsg={}",responseCode,responseMsg);
 			
 			JedisUtil.lpush(InitConfig.QUEUE_SOURCE, page.getWebResponse().getContentAsString());
 			

@@ -3,15 +3,19 @@ package com.zzg.spiderNews.entry;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import com.zzg.spiderNews.cache.InitConfig;
 import com.zzg.spiderNews.cache.JedisUtil;
 import com.zzg.spiderNews.fetch.Download;
+import com.zzg.spiderNews.parse.BloomFilterUtil;
 
 
 public class SlaveApp {
+	private static final Logger logger = LoggerFactory.getLogger(SlaveApp.class);
 	
 /*	//并发执行队列
 	private Queue<String> localQueue = new ConcurrentLinkedDeque<String>();
@@ -32,9 +36,10 @@ public class SlaveApp {
 	   }
 	}*/
 	
-	public static void main(String args[]){
-		
+	public static void start(String args[]){
+		logger.info("slave启动,加载上下文开始");
 		ApplicationContext context = new ClassPathXmlApplicationContext(new String[] {"spring/spring-service.xml","spring/spring-dao.xml"});
+		logger.info("加载上下文结束");
 		final Download download = (Download)context.getBean("download");
 		
 		ExecutorService fetchPool = Executors.newSingleThreadExecutor();
@@ -50,9 +55,11 @@ public class SlaveApp {
 							// TODO Auto-generated catch block
 							e.printStackTrace();
 						}
+						logger.info("QUEUE_URL队列为空，继续");
 						continue;
 					}
 					try {
+						logger.info("页面请求url={} method={}",url,"GET");
 						download.loadPage(url, "GET", null, null, null);
 					} catch (Exception e) {
 						e.printStackTrace();
